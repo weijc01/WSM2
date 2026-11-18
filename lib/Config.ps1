@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 #  WSM2 - Config.ps1
 #  Inlezen / valideren / wegschrijven van de Wreckfest 2
 #  serverconfiguratiebestanden (JSON).
@@ -32,7 +32,7 @@ function Read-JsonFile {
         if ([string]::IsNullOrWhiteSpace($raw)) { return $null }
         return ($raw | ConvertFrom-Json)
     } catch {
-        throw "Kan JSON niet lezen uit '$Path': $($_.Exception.Message)"
+        throw ((T 'Kan JSON niet lezen uit {0}: {1}') -f @($Path, $_.Exception.Message))
     }
 }
 

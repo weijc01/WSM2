@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 #  WSM2 - Profiles.ps1
 #  App-instellingen en serverprofielen (WSM2.settings.json).
 # ============================================================
@@ -15,6 +15,7 @@ function New-DefaultSettings {
         ServerInstallPath = (Find-WF2ServerInstall)
         SteamExe          = (Find-SteamExe)
         LastProfile       = 'Standaard'
+        Language          = 'nl'
         FollowLog         = $true
         Profiles          = @(
             [ordered]@{ Name = 'Standaard'; SaveDir = $saveDir; Mode = 'community' }
@@ -35,6 +36,7 @@ function Load-Settings {
         Set-Prop $s 'Profiles' @( [ordered]@{ Name = 'Standaard'; SaveDir = 'C:\WreckFest2server'; Mode = 'community' } )
     }
     if (-not (Get-Prop $s 'LastProfile')) { Set-Prop $s 'LastProfile' 'Standaard' }
+    if (-not (Get-Prop $s 'Language')) { Set-Prop $s 'Language' 'nl' }
     if ($null -eq (Get-Prop $s 'ServerInstallPath')) { Set-Prop $s 'ServerInstallPath' (Find-WF2ServerInstall) }
     if ($null -eq (Get-Prop $s 'SteamExe')) { Set-Prop $s 'SteamExe' (Find-SteamExe) }
     if ($null -eq (Get-Prop $s 'FollowLog')) { Set-Prop $s 'FollowLog' $true }

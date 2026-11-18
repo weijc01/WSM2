@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 #  WSM2 - Wreckfest 2 Server Manager
 #  Hoofdvenster (WinForms). Nederlandse interface.
 # ============================================================
@@ -9,6 +9,7 @@ Add-Type -AssemblyName System.Drawing
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
 $script:AppRoot = $PSScriptRoot
+. (Join-Path $script:AppRoot 'lib\Languages.ps1')
 . (Join-Path $script:AppRoot 'lib\Config.ps1')
 . (Join-Path $script:AppRoot 'lib\GameData.ps1')
 . (Join-Path $script:AppRoot 'lib\Profiles.ps1')
@@ -16,6 +17,9 @@ $script:AppRoot = $PSScriptRoot
 
 # --- Globale status -----------------------------------------
 $script:Settings      = Load-Settings
+if ($env:WSM2_LANG -and ((Get-LanguageCodes) -contains $env:WSM2_LANG)) { Set-Language $env:WSM2_LANG }
+else { Set-Language ([string](Get-Prop $script:Settings 'Language')) }
+$script:SuppressLanguageEvent = $false
 $script:GameData      = $null
 $script:Events        = @()
 $script:EventLoopBbmeta = $null
@@ -27,7 +31,7 @@ $script:CurCupIndex   = -1
 $script:UI            = @{}
 
 # --- Kleine helpers -----------------------------------------
-function Show-Err { param($m) [System.Windows.Forms.MessageBox]::Show($m, 'WSM2 - Fout', 'OK', 'Error') | Out-Null }
+function Show-Err { param($m) [System.Windows.Forms.MessageBox]::Show($m, (T 'WSM2 - Fout'), 'OK', 'Error') | Out-Null }
 function Show-Info { param($m) [System.Windows.Forms.MessageBox]::Show($m, 'WSM2', 'OK', 'Information') | Out-Null }
 
 function Get-CurrentProfile {
@@ -43,7 +47,7 @@ function Get-CurrentMode { return [string](Get-Prop (Get-CurrentProfile) 'Mode')
 function Test-ServerStoppedOrWarn {
     $install = [string](Get-Prop $script:Settings 'ServerInstallPath')
     if ($install -and (Test-ServerRunning -InstallPath $install)) {
-        Show-Err "De server draait nog. Stop de server eerst voordat je de configuratie opslaat (de server overschrijft de bestanden bij het afsluiten)."
+        Show-Err (T 'De server draait nog. Stop de server eerst voordat je de configuratie opslaat (de server overschrijft de bestanden bij het afsluiten).')
         return $false
     }
     return $true
@@ -122,7 +126,7 @@ function New-Grid { param($parent,$x,$y,$w,$h,$columns)
 function Parse-JsonTextbox {
     param($Text, $Default)
     if ([string]::IsNullOrWhiteSpace($Text)) { return $Default }
-    try { return ($Text | ConvertFrom-Json) } catch { throw "Ongeldige JSON: $($_.Exception.Message)" }
+    try { return ($Text | ConvertFrom-Json) } catch { throw ((T 'Ongeldige JSON: {0}') -f $_.Exception.Message) }
 }
 
 function Format-Json { param($Obj) if ($null -eq $Obj) { return '' } return ($Obj | ConvertTo-Json -Depth 100) }
@@ -155,6 +159,48 @@ function Swap-At {
 }
 
 # ============================================================
+#  Meertalige interface
+# ============================================================
+$script:DynamicTextControls = @()
+$script:LanguageApplied = $false
+$script:InitError = $null
+
+function Translate-ControlTree {
+    param($Controls)
+    foreach ($c in $Controls) {
+        if ($c -is [System.Windows.Forms.Control]) {
+            $skip = ($c -is [System.Windows.Forms.TextBox]) -or
+                    ($c -is [System.Windows.Forms.ComboBox]) -or
+                    ($c -is [System.Windows.Forms.ListBox]) -or
+                    ($c -is [System.Windows.Forms.DataGridView]) -or
+                    ($c -is [System.Windows.Forms.NumericUpDown])
+            if (-not $skip -and ($script:DynamicTextControls -notcontains $c)) {
+                $tag = $c.Tag
+                if (($null -eq $tag) -or ($tag -isnot [string]) -or [string]::IsNullOrEmpty([string]$tag)) { $c.Tag = [string]$c.Text }
+                $c.Text = T ([string]$c.Tag)
+            }
+            if ($c.Controls.Count -gt 0) { Translate-ControlTree $c.Controls }
+        }
+    }
+}
+
+function Apply-Language {
+    $form.Text = T 'WSM2 - Wreckfest 2 Server Manager'
+    Translate-ControlTree $form.Controls
+    foreach ($grid in @($script:UI['gridRoles'], $script:UI['gridProfiles'])) {
+        if ($null -eq $grid) { continue }
+        foreach ($col in $grid.Columns) {
+            if ($null -eq $col.Tag) { $col.Tag = [string]$col.HeaderText }
+            $col.HeaderText = T ([string]$col.Tag)
+        }
+    }
+    if ($script:UI.ContainsKey('statusLabel')) { $script:UI['statusLabel'].Text = T 'Gereed' }
+    Refresh-Status
+    Refresh-LogView
+    $script:LanguageApplied = $true
+}
+
+# ============================================================
 #  Hoofdformulier
 # ============================================================
 $form = New-Object System.Windows.Forms.Form
@@ -180,7 +226,7 @@ $tabs.TabPages.AddRange(@($tabServer,$tabEvents,$tabCups,$tabPriv,$tabTele,$tabS
 # Statusbalk
 $status = New-Object System.Windows.Forms.StatusStrip
 $script:UI['statusLabel'] = New-Object System.Windows.Forms.ToolStripStatusLabel
-$script:UI['statusLabel'].Text = 'Gereed'
+$script:UI['statusLabel'].Text = T 'Gereed'
 $status.Items.Add($script:UI['statusLabel']) | Out-Null
 $form.Controls.Add($status)
 
@@ -400,6 +446,7 @@ $btnStop.BackColor = [System.Drawing.Color]::FromArgb(255,199,206)
 $btnRefresh = New-Btn $gStart 'Status vernieuwen' 510 130 150 34
 $script:UI['lblStatus'] = New-Label $gStart 'Status: onbekend' 130 180 700 30 -PassThru
 $script:UI['lblStatus'].Font = New-Object System.Drawing.Font('Segoe UI',10,[System.Drawing.FontStyle]::Bold)
+$script:DynamicTextControls += $script:UI['lblStatus']
 
 $gLogView = New-Group $tabStart 'Serverlog' 10 270 960 400
 $script:UI['chkFollowLog'] = New-Check $gLogView 'Automatisch verversen' 15 25 200
@@ -432,6 +479,10 @@ $btnProfDel = New-Btn $gProfiles 'Rij verwijderen' 150 330 130
 $btnProfSave = New-Btn $gProfiles 'Profielen opslaan' 290 330 160
 $lblProfHint = New-Label $gProfiles 'Na het opslaan de app herstarten of op "Profielen vernieuwen" klikken.' 470 335 480 -PassThru
 $lblProfHint.ForeColor = [System.Drawing.Color]::DimGray
+
+New-Label $tabSet 'Taal:' 10 585 80
+$script:UI['cmbLanguage'] = New-Combo $tabSet 90 582 180 $false
+foreach ($code in (Get-LanguageCodes)) { [void]$script:UI['cmbLanguage'].Items.Add((Get-LanguageName $code)) }
 
 # ============================================================
 #  Data laden
@@ -559,8 +610,8 @@ function Save-ServerConfigFromUI {
     }
     $paths = Get-SaveDirPaths -SaveDir (Get-CurrentSaveDir)
     Save-ServerConfig -Path $paths.ServerConfig -Values $vals
-    $script:UI['statusLabel'].Text = "Serverconfig opgeslagen: $($paths.ServerConfig)"
-    Show-Info 'Serverconfiguratie opgeslagen.'
+    $script:UI['statusLabel'].Text = (T 'Serverconfig opgeslagen: {0}') -f $paths.ServerConfig
+    Show-Info (T 'Serverconfiguratie opgeslagen.')
 }
 
 # --- Evenementen: model --------------------------------------
@@ -693,8 +744,8 @@ function Save-EventLoopToFile {
     $path = Join-Path (Get-CurrentSaveDir) "$Name.becl"
     Write-JsonFile -Path $path -Object $root
     Refresh-SaveDirLists
-    $script:UI['statusLabel'].Text = "Event loop opgeslagen: $path"
-    Show-Info "Event loop '$Name' opgeslagen."
+    $script:UI['statusLabel'].Text = (T 'Event loop opgeslagen: {0}') -f $path
+    Show-Info ((T "Event loop '{0}' opgeslagen.") -f $Name)
 }
 
 # --- Cups: model ---------------------------------------------
@@ -805,8 +856,8 @@ function Save-CupConfigToFile {
     $root['cups'] = $cupsOut
     $paths = Get-SaveDirPaths -SaveDir (Get-CurrentSaveDir)
     Write-JsonFile -Path $paths.CupConfig -Object $root
-    $script:UI['statusLabel'].Text = "Cups opgeslagen: $($paths.CupConfig)"
-    Show-Info 'Cup-configuratie opgeslagen.'
+    $script:UI['statusLabel'].Text = (T 'Cups opgeslagen: {0}') -f $paths.CupConfig
+    Show-Info (T 'Cup-configuratie opgeslagen.')
 }
 
 # --- Rollen & bans -------------------------------------------
@@ -843,7 +894,7 @@ function Save-PrivilegeFromUI {
     }
     $bans = @()
     try { $bans = @(Parse-JsonTextbox $script:UI['txtBans'].Text @()) }
-    catch { Show-Err "Bans bevatten ongeldige JSON: $($_.Exception.Message)"; return }
+        catch { Show-Err ((T 'Bans bevatten ongeldige JSON: {0}') -f $_.Exception.Message); return }
 
     $root = [ordered]@{}
     if ($script:PrivBbmeta) { $root['bbmeta'] = $script:PrivBbmeta } else { $root['bbmeta'] = 'sprv v0 n1' }
@@ -851,8 +902,8 @@ function Save-PrivilegeFromUI {
     $root['bans'] = $bans
     $paths = Get-SaveDirPaths -SaveDir (Get-CurrentSaveDir)
     Write-JsonFile -Path $paths.Privilege -Object $root
-    $script:UI['statusLabel'].Text = "Rollen & bans opgeslagen: $($paths.Privilege)"
-    Show-Info 'Rollen & bans opgeslagen.'
+    $script:UI['statusLabel'].Text = (T 'Rollen & bans opgeslagen: {0}') -f $paths.Privilege
+    Show-Info (T 'Rollen & bans opgeslagen.')
 }
 
 # --- Telemetrie ----------------------------------------------
@@ -892,8 +943,8 @@ function Save-TelemetryFromUI {
     }
     $paths = Get-SaveDirPaths -SaveDir (Get-CurrentSaveDir)
     Write-JsonFile -Path $paths.Telemetry -Object $root
-    $script:UI['statusLabel'].Text = "Telemetrie opgeslagen: $($paths.Telemetry)"
-    Show-Info 'Telemetrie opgeslagen.'
+    $script:UI['statusLabel'].Text = (T 'Telemetrie opgeslagen: {0}') -f $paths.Telemetry
+    Show-Info (T 'Telemetrie opgeslagen.')
 }
 
 # --- Profielen & instellingen --------------------------------
@@ -920,13 +971,13 @@ function Save-ProfilesFromUI {
         if ($m -notin @('community','local')) { $m = 'community' }
         $list += [ordered]@{ Name = $n; SaveDir = [string]$row.Cells[1].Value; Mode = $m }
     }
-    if ($list.Count -eq 0) { Show-Err 'Er moet minstens één profiel zijn.'; return }
+    if ($list.Count -eq 0) { Show-Err (T 'Er moet minstens één profiel zijn.'); return }
     Set-Prop $script:Settings 'Profiles' $list
     Set-Prop $script:Settings 'ServerInstallPath' $script:UI['txtInstallPath'].Text
     Set-Prop $script:Settings 'SteamExe' $script:UI['txtSteamExe'].Text
     Save-Settings $script:Settings
     Refresh-ProfilesUI
-    Show-Info 'Instellingen en profielen opgeslagen.'
+    Show-Info (T 'Instellingen en profielen opgeslagen.')
 }
 
 # --- Log / status --------------------------------------------
@@ -943,18 +994,18 @@ function Refresh-Status {
     $running = $false
     if ($install) { $running = Test-ServerRunning -InstallPath $install }
     if ($running) {
-        $script:UI['lblStatus'].Text = 'Status: SERVER DRAAIT'
+        $script:UI['lblStatus'].Text = T 'Status: SERVER DRAAIT'
         $script:UI['lblStatus'].ForeColor = [System.Drawing.Color]::Green
     } else {
-        $script:UI['lblStatus'].Text = 'Status: gestopt'
+        $script:UI['lblStatus'].Text = T 'Status: gestopt'
         $script:UI['lblStatus'].ForeColor = [System.Drawing.Color]::Firebrick
     }
 }
 
 function Refresh-LogView {
     $p = Get-ConfiguredLogPath
-    if (-not $p) { $script:UI['txtLogView'].Text = '(Geen logbestand ingesteld in de serverconfig.)'; return }
-    if (-not (Test-Path -LiteralPath $p)) { $script:UI['txtLogView'].Text = "Logbestand nog niet gevonden: $p"; return }
+    if (-not $p) { $script:UI['txtLogView'].Text = (T '(Geen logbestand ingesteld in de serverconfig.)'); return }
+    if (-not (Test-Path -LiteralPath $p)) { $script:UI['txtLogView'].Text = (T 'Logbestand nog niet gevonden: {0}') -f $p; return }
     $script:UI['txtLogView'].Text = Get-LogFileTail -LogPath $p -Lines 300
     $script:UI['txtLogView'].SelectionStart = $script:UI['txtLogView'].Text.Length
     $script:UI['txtLogView'].ScrollToCaret()
@@ -1012,7 +1063,7 @@ $btnLoopSave.Add_Click({
     try {
         $name = [string]$script:UI['cmbLoopFile'].Text
         if ([string]::IsNullOrWhiteSpace($name)) { $name = [string]$script:UI['cmbEventLoop'].Text }
-        if ([string]::IsNullOrWhiteSpace($name)) { Show-Err 'Geef een naam voor het event loop-bestand.'; return }
+        if ([string]::IsNullOrWhiteSpace($name)) { Show-Err (T 'Geef een naam voor het event loop-bestand.'); return }
         Save-EventLoopToFile $name
         $script:UI['cmbLoopFile'].Text = $name
         $script:UI['cmbEventLoop'].Text = $name
@@ -1129,7 +1180,7 @@ $btnSaveTele.Add_Click({ try { Save-TelemetryFromUI } catch { Show-Err $_.Except
 
 $btnSaveDir.Add_Click({
     $dir = $script:UI['txtSaveDir'].Text
-    if (Test-Path -LiteralPath $dir) { Start-Process explorer.exe $dir } else { Show-Err "Map bestaat niet: $dir" }
+    if (Test-Path -LiteralPath $dir) { Start-Process explorer.exe $dir } else { Show-Err ((T 'Map bestaat niet: {0}') -f $dir) }
 })
 $btnStart.Add_Click({
     try {
@@ -1142,11 +1193,11 @@ $btnStart.Add_Click({
         Save-PrivilegeFromUI
         Save-TelemetryFromUI
         $install = [string](Get-Prop $script:Settings 'ServerInstallPath')
-        if (-not (Test-Path -LiteralPath (Join-Path $install 'Wreckfest2.exe'))) { Show-Err "Server niet gevonden in: $install"; return }
+        if (-not (Test-Path -LiteralPath (Join-Path $install 'Wreckfest2.exe'))) { Show-Err ((T 'Server niet gevonden in: {0}') -f $install); return }
         $mode = if ($script:UI['cmbMode'].SelectedIndex -eq 1) { 'local' } else { 'community' }
         $dir = $script:UI['txtSaveDir'].Text
         Start-WF2Server -InstallPath $install -SaveDir $dir -Mode $mode | Out-Null
-        $script:UI['statusLabel'].Text = 'Server gestart in een apart venster.'
+        $script:UI['statusLabel'].Text = T 'Server gestart in een apart venster.'
         Start-Sleep -Milliseconds 800
         Refresh-Status
         if ($script:UI['chkFollowLog'].Checked) { Refresh-LogView }
@@ -1156,7 +1207,7 @@ $btnStop.Add_Click({
     try {
         $install = [string](Get-Prop $script:Settings 'ServerInstallPath')
         $n = Stop-WF2Server -InstallPath $install
-        $script:UI['statusLabel'].Text = "Server gestopt ($n proces(sen))."
+        $script:UI['statusLabel'].Text = (T 'Server gestopt ({0} proces(sen)).') -f $n
         Refresh-Status
     } catch { Show-Err $_.Exception.Message }
 })
@@ -1164,7 +1215,7 @@ $btnRefresh.Add_Click({ Refresh-Status })
 $btnRefreshLog.Add_Click({ Refresh-LogView })
 $btnOpenLog.Add_Click({
     $p = Get-ConfiguredLogPath
-    if ($p -and (Test-Path -LiteralPath $p)) { Start-Process notepad.exe $p } else { Show-Err 'Logbestand niet gevonden.' }
+    if ($p -and (Test-Path -LiteralPath $p)) { Start-Process notepad.exe $p } else { Show-Err (T 'Logbestand niet gevonden.') }
 })
 
 $script:UI['cmbProfile'].Add_SelectedIndexChanged({
@@ -1181,7 +1232,7 @@ $script:UI['cmbProfile'].Add_SelectedIndexChanged({
 
 $btnDetect.Add_Click({
     $install = Find-WF2ServerInstall
-    if ($install) { $script:UI['txtInstallPath'].Text = $install } else { Show-Err 'Server-installatie niet gevonden.' }
+    if ($install) { $script:UI['txtInstallPath'].Text = $install } else { Show-Err (T 'Server-installatie niet gevonden.') }
     $steam = Find-SteamExe
     if ($steam) { $script:UI['txtSteamExe'].Text = $steam }
 })
@@ -1207,6 +1258,18 @@ $btnProfDel.Add_Click({
 })
 $btnProfSave.Add_Click({ try { Save-ProfilesFromUI } catch { Show-Err $_.Exception.Message } })
 
+$script:UI['cmbLanguage'].Add_SelectedIndexChanged({
+    if ($script:SuppressLanguageEvent) { return }
+    $codes = Get-LanguageCodes
+    $idx = $script:UI['cmbLanguage'].SelectedIndex
+    if ($idx -lt 0 -or $idx -ge $codes.Count) { return }
+    $code = $codes[$idx]
+    Set-Language $code
+    Set-Prop $script:Settings 'Language' $code
+    Save-Settings $script:Settings
+    Apply-Language
+})
+
 # Log-timer
 $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = 2500
@@ -1228,15 +1291,22 @@ try {
     $mode = Get-CurrentMode
     $script:UI['cmbMode'].SelectedIndex = if ($mode -eq 'local') { 1 } else { 0 }
     Load-AllConfigs
+    $script:SuppressLanguageEvent = $true
+    $langIndex = [Array]::IndexOf((Get-LanguageCodes), $script:Language)
+    if ($langIndex -ge 0) { $script:UI['cmbLanguage'].SelectedIndex = $langIndex }
+    $script:SuppressLanguageEvent = $false
+    Apply-Language
 } catch {
-    Show-Err "Fout bij laden: $($_.Exception.Message)"
+    $script:InitError = $_.Exception.Message
+    Show-Err ((T 'Fout bij laden: {0}') -f $_.Exception.Message)
 }
 
 if ($env:WSM2_SELFTEST -eq '1') {
     $timer.Stop()
-    Write-Output ("SELFTEST OK | events={0} cups={1} levels={2} weather={3} loops={4} profile='{5}' savedir='{6}'" -f `
+    Write-Output ("SELFTEST OK | lang={7} applied={10} error='{11}' events={0} cups={1} levels={2} weather={3} loops={4} profile='{5}' savedir='{6}' settings='{8}' status='{9}'" -f `
         $script:Events.Count, $script:Cups.Count, $script:GameData.Levels.Count, $script:GameData.Weather.Count, `
-        $script:UI['cmbLoopFile'].Items.Count, (Get-Prop (Get-CurrentProfile) 'Name'), (Get-CurrentSaveDir))
+        $script:UI['cmbLoopFile'].Items.Count, (Get-Prop (Get-CurrentProfile) 'Name'), (Get-CurrentSaveDir), `
+        $script:Language, $tabSet.Text, $script:UI['statusLabel'].Text, $script:LanguageApplied, $script:InitError)
     $form.Dispose()
     return
 }

@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 #  WSM2 - GameData.ps1
 #  Detectie van Steam-bibliotheken en uitlezen van speldata
 #  voor de dropdowns (levels, weer, AI-sets, game modes).

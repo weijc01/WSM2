@@ -5,6 +5,7 @@ WSM2 is een grafisch beheerprogramma voor een **Wreckfest 2 dedicated server** o
 ## Functies
 
 - WinForms-interface met zeven tabbladen: Server, Evenementen, Cups, Rollen & Bans, Telemetrie, Starten en Instellingen.
+- Meertalige interface: Nederlands, Engels, Frans en Duits, direct te wisselen via **Instellingen → Taal:**.
 - Meerdere **profielen** met elk een eigen save-dir en modus (`community` of `lokaal`).
 - Automatische detectie van Steam en de Wreckfest 2 Dedicated Server, inclusief extra Steam-bibliotheken.
 - Dropdowns gevuld met echte speldata: levels (`.evse`), weer (`.weat`), AI-sets (`.aist`), game modes en cup-loops (`.becl`).
@@ -62,10 +63,12 @@ Zie [HANDLEIDING.md](HANDLEIDING.md) voor de uitgebreide stapsgewijze uitleg van
 | --- | --- |
 | `WSM2.cmd` | Launcher; start het hoofdvenster zonder zichtbare PowerShell-console. |
 | `WSM2.ps1` | Hoofdprogramma: WinForms-interface, event wiring en load/save-logica. |
-| `WSM2.settings.json` | App-instellingen: paden, laatste profiel, log-volgen en profielen. |
+| `WSM2.settings.json` | App-instellingen: paden, laatste profiel, taal, log-volgen en profielen. |
 | `lib/Config.ps1` | Lezen, valideren en schrijven van serverconfig, cups, privileges en telemetrie, inclusief back-ups. |
 | `lib/GameData.ps1` | Detectie van Steam-bibliotheken en uitlezen van speldata voor dropdowns. |
 | `lib/Profiles.ps1` | Beheer van `WSM2.settings.json` en profielen. |
+| `lib/Languages.ps1` | Centrale taalfuncties en taalkeuze (NL/EN/FR/DE). |
+| `lib/Languages.*.ps1` | Vertalingen voor respectievelijk EN, FR en DE. |
 | `lib/Server.ps1` | Server starten/stoppen, statuscontrole en log uitlezen. |
 
 ## Configuratiebestanden
@@ -96,6 +99,7 @@ Bij elk opslaan maakt WSM2 eerst een kopie als `<bestandsnaam>.yyyyMMdd_HHmmss.b
 ## Geavanceerd
 
 - Met de omgevingsvariabele `WSM2_SELFTEST=1` voert het programma een diagnostische run uit zonder venster en print een samenvatting van geladen data.
+- Met `WSM2_LANG=nl|en|fr|de` forceer je tijdelijk een taal; zonder deze variabele geldt de keuze uit `WSM2.settings.json`.
 - `WSM2.settings.json` wordt bewust **zonder** back-up geschreven; maak zelf een kopie voordat je paden of profielen handmatig aanpast.
 
 ## Disclaimer

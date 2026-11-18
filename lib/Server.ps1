@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 #  WSM2 - Server.ps1
 #  Starten (in een apart consolevenster), stoppen, status en
 #  het volgen van het serverlogbestand.
@@ -56,7 +56,7 @@ function Start-WF2Server {
     )
     $exe = Get-ServerExePath -InstallPath $InstallPath
     if (-not (Test-Path -LiteralPath $exe)) {
-        throw "Server-executable niet gevonden: $exe"
+        throw ((T 'Server-executable niet gevonden: {0}') -f $exe)
     }
     if (-not (Test-Path -LiteralPath $SaveDir)) {
         New-Item -ItemType Directory -Path $SaveDir -Force | Out-Null
@@ -80,8 +80,8 @@ function Start-WF2Server {
         "cd /d `"$InstallPath`""
         "`"$exe`" $modeArg --save-dir=$saveArg"
         'echo.'
-        'echo === Server gestopt (exitcode %errorlevel%) ==='
-        'echo Druk op een toets om dit venster te sluiten.'
+        "echo === $(T 'Server gestopt (exitcode %errorlevel%)') ==="
+        "echo $(T 'Druk op een toets om dit venster te sluiten.')"
         'pause >nul'
     )
     [System.IO.File]::WriteAllText($launcher, ($lines -join "`r`n"), (New-Object System.Text.UTF8Encoding($false)))
