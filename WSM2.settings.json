@@ -1,0 +1,13 @@
+{
+    "ServerInstallPath":  "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Wreckfest 2 Dedicated Server",
+    "SteamExe":  "C:\\Program Files (x86)\\Steam\\steam.exe",
+    "LastProfile":  "Standaard",
+    "FollowLog":  true,
+    "Profiles":  [
+                     {
+                         "Name":  "Standaard",
+                         "SaveDir":  "C:\\WreckFest2server",
+                         "Mode":  "community"
+                     }
+                 ]
+}
