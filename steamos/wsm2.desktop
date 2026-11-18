@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=WSM2 - Wreckfest 2 Server Manager
+Comment=Manage a Wreckfest 2 server on SteamOS
+Exec=konsole --hold -e /bin/sh -c 'python3 "@APP_DIR@/WSM2.py"'
+TryExec=konsole
+Terminal=false
+Categories=Game;Utility;
