@@ -19,6 +19,24 @@ WSM2 is een grafisch beheerprogramma voor een **Wreckfest 2 dedicated server** o
 - Steam met **Wreckfest 2 Dedicated Server** geïnstalleerd (AppID `1203190`).
 - Schrijfrechten op de installatiemap (`steam_appid.txt` wordt indien nodig aangemaakt) en op de save-dir.
 
+### Moet ik .NET Framework apart installeren?
+
+Meestal **nee**: Windows 10/11 levert PowerShell 5.1 en .NET Framework 4.x met WinForms standaard mee. WSM2 heeft geen .NET **SDK** of **Developer Pack** nodig, alleen de **runtime**.
+
+Controleren in PowerShell:
+
+```powershell
+$PSVersionTable.PSVersion          # moet 5.1.x zijn
+(Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full').Release   # 528040 of hoger = .NET 4.8
+```
+
+Als .NET Framework 4.8 ontbreekt of is uitgeschakeld:
+
+1. Download de **.NET Framework 4.8 Runtime** (niet het Developer Pack) van <https://dotnet.microsoft.com/download/dotnet-framework/net48>.
+2. Onder *Advanced downloads* kun je eventueel de **offline installer** kiezen als er tijdens de installatie geen internet beschikbaar is.
+3. Voer de installer uit als administrator en herstart Windows als dat wordt gevraagd.
+4. Alternatief op Windows 10/11: **Configuratiescherm → Programma's en onderdelen → Windows-onderdelen in-/uitschakelen** → ".NET Framework 4.8" aanvinken.
+
 ## Installatie
 
 1. Download of clone deze repository naar een vaste map, bijvoorbeeld `C:\Tools\WSM2`.
