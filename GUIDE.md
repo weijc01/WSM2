@@ -1,6 +1,6 @@
-# Manual – WSM2 (Wreckfest 2 Server Manager)
+# Guide – WSM2 (Wreckfest 2 Server Manager)
 
-This manual describes step by step how to use WSM2. First read the [README.en.md](README.en.md) for installation and general information.
+This guide describes step by step how to use WSM2. First read the [README.md](README.md) for installation and general information.
 
 ## Contents
 
@@ -54,7 +54,7 @@ Buttons:
 - **Bladeren...** (Browse) (next to each field): choose the folder or file manually.
 - **Automatisch detecteren** (Auto-detect): searches `Program Files (x86)`, `Program Files`, the registry and Steam's `libraryfolders.vdf`. Useful if Steam is on a different drive.
 - **Instellingen opslaan** (Save settings): writes the paths and the profile table to `WSM2.settings.json` and refreshes the dropdowns with game data.
-- **Taal:** (Language): choose **Nederlands**, **English**, **Français** or **Deutsch**. The change is applied immediately and saved as `Language` in `WSM2.settings.json`.
+- **Taal:** (Language): choose **English** (default), **Nederlands**, **Français** or **Deutsch**. The change is applied immediately and saved as `Language` in `WSM2.settings.json`.
 
 ### Profiles
 

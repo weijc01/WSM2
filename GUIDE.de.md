@@ -54,7 +54,7 @@ Schaltflächen:
 - **Bladeren...** (Durchsuchen...) (bei jedem Feld): Ordner bzw. Datei manuell auswählen.
 - **Automatisch detecteren** (Automatisch erkennen): Sucht in `Program Files (x86)`, `Program Files`, der Registrierung und in `libraryfolders.vdf` von Steam. Nützlich, wenn Steam auf einem anderen Laufwerk installiert ist.
 - **Instellingen opslaan** (Einstellungen speichern): Schreibt die Pfade und die Profiltabelle nach `WSM2.settings.json` und aktualisiert die Dropdowns mit Spieldaten.
-- **Taal:** (Sprache): Wählen Sie **Nederlands**, **English**, **Français** oder **Deutsch**. Die Änderung wird sofort angewendet und als `Language` in `WSM2.settings.json` gespeichert.
+- **Taal:** (Sprache): Wählen Sie **English** (Standard), **Nederlands**, **Français** oder **Deutsch**. Die Änderung wird sofort angewendet und als `Language` in `WSM2.settings.json` gespeichert.
 
 ### Profile
 

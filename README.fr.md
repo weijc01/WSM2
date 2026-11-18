@@ -5,7 +5,7 @@ WSM2 est un utilitaire graphique de gestion d'un **serveur dédié Wreckfest 2**
 ## Fonctionnalités
 
 - Interface WinForms avec sept onglets : Server, Evenementen, Cups, Rollen & Bans, Telemetrie, Starten et Instellingen.
-- Interface multilingue : néerlandais, anglais, français et allemand, à changer via **Instellingen → Taal:** (Paramètres → Langue).
+- Interface multilingue : anglais (par défaut), néerlandais, français et allemand, à changer via **Instellingen → Taal:** (Paramètres → Langue).
 - Plusieurs **profils**, chacun avec son propre save-dir et son propre mode (`community` ou `lokaal`).
 - Détection automatique de Steam et du serveur dédié Wreckfest 2, y compris les bibliothèques Steam supplémentaires.
 - Listes déroulantes alimentées par les données réelles du jeu : levels (`.evse`), météo (`.weat`), sets d'IA (`.aist`), modes de jeu et cup loops (`.becl`).
@@ -55,7 +55,7 @@ Si .NET Framework 4.8 est absent ou désactivé :
 4. **Cups** (facultatif) : configurez les cups → **Cups opslaan**.
 5. **Starten** : choisissez le profil et le mode → **START server**. Arrêtez toujours le serveur avant de modifier une configuration.
 
-Consultez [HANDLEIDING.fr.md](HANDLEIDING.fr.md) pour les explications détaillées, étape par étape, de tous les champs et workflows.
+Consultez [GUIDE.fr.md](GUIDE.fr.md) pour les explications détaillées, étape par étape, de tous les champs et workflows.
 
 ## Structure du projet
 
@@ -68,7 +68,7 @@ Consultez [HANDLEIDING.fr.md](HANDLEIDING.fr.md) pour les explications détaill�
 | `lib/GameData.ps1` | Détection des bibliothèques Steam et lecture des données de jeu pour les listes déroulantes. |
 | `lib/Profiles.ps1` | Gestion de `WSM2.settings.json` et des profils. |
 | `lib/Languages.ps1` | Fonctions de langue centrales et sélection de la langue (NL/EN/FR/DE). |
-| `lib/Languages.*.ps1` | Traductions pour EN, FR et DE. |
+| `lib/Languages.*.ps1` | Clés néerlandaises et traductions pour EN, FR et DE. |
 | `lib/Server.ps1` | Démarrage/arrêt du serveur, contrôle de l'état et lecture du journal. |
 
 ## Fichiers de configuration
@@ -99,7 +99,7 @@ Tous les fichiers se trouvent dans le **save-dir** du profil actif (par défaut 
 ## Avancé
 
 - Avec la variable d'environnement `WSM2_SELFTEST=1`, le programme effectue un test de diagnostic sans fenêtre et affiche un résumé des données chargées.
-- Avec `WSM2_LANG=nl|en|fr|de`, vous pouvez forcer temporairement une langue ; sans cette variable, le choix de `WSM2.settings.json` s'applique.
+- Avec `WSM2_LANG=en|nl|fr|de`, vous pouvez forcer temporairement une langue ; sans cette variable, le choix de `WSM2.settings.json` s'applique (par défaut `en`).
 - `WSM2.settings.json` est écrit **sans** sauvegarde ; faites une copie manuelle avant de modifier les chemins ou les profils à la main.
 
 ## Avertissement

@@ -1,11 +1,11 @@
 ﻿# ============================================================
 #  WSM2 - Languages.ps1
-#  Meertalige interface: NL (standaard), EN, FR en DE.
+#  Meertalige interface: EN (standaard), NL, FR en DE.
 #  De Nederlandse tekst dient als sleutel; ontbrekende
 #  vertalingen vallen terug op het Nederlands.
 # ============================================================
 
-$script:Language = 'nl'
+$script:Language = 'en'
 $script:Languages = @{}
 
 function Register-Language {
@@ -14,7 +14,7 @@ function Register-Language {
 }
 
 function Get-LanguageCodes {
-    return @('nl', 'en', 'fr', 'de')
+    return @('en', 'nl', 'fr', 'de')
 }
 
 function Get-LanguageName {
@@ -31,7 +31,7 @@ function Get-LanguageName {
 function Set-Language {
     param([string]$Code)
     if ($Code -and $script:Languages.ContainsKey($Code)) { $script:Language = $Code }
-    else { $script:Language = 'nl' }
+    else { $script:Language = 'en' }
 }
 
 function T {

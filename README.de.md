@@ -5,7 +5,7 @@ WSM2 ist ein grafisches Verwaltungsprogramm für einen **Wreckfest 2 Dedicated S
 ## Funktionen
 
 - WinForms-Oberfläche mit sieben Registerkarten: Server, Evenementen (Veranstaltungen), Cups, Rollen & Bans, Telemetrie, Starten und Instellingen (Einstellungen).
-- Mehrsprachige Oberfläche: Niederländisch, Englisch, Französisch und Deutsch, umschaltbar über **Instellingen → Taal:** (Einstellungen → Sprache).
+- Mehrsprachige Oberfläche: Englisch (Standard), Niederländisch, Französisch und Deutsch, umschaltbar über **Instellingen → Taal:** (Einstellungen → Sprache).
 - Mehrere **Profile** mit jeweils eigener save-dir und eigenem Modus (`community` oder `lokaal`).
 - Automatische Erkennung von Steam und dem Wreckfest 2 Dedicated Server, einschließlich zusätzlicher Steam-Bibliotheken.
 - Dropdowns, gefüllt mit echten Spieldaten: Levels (`.evse`), Wetter (`.weat`), AI-Sets (`.aist`), Game Modes und Cup-Loops (`.becl`).
@@ -55,7 +55,7 @@ Falls .NET Framework 4.8 fehlt oder deaktiviert ist:
 4. **Cups** (optional): Cups konfigurieren → **Cups opslaan** (Cups speichern).
 5. **Starten**: Profil und Modus wählen → **START server**. Beenden Sie den Server immer zuerst, bevor Sie die Konfiguration ändern.
 
-Weitere ausführliche Schritt-für-Schritt-Erläuterungen zu allen Feldern und Workflows finden Sie in [HANDLEIDING.de.md](HANDLEIDING.de.md).
+Weitere ausführliche Schritt-für-Schritt-Erläuterungen zu allen Feldern und Workflows finden Sie in [GUIDE.de.md](GUIDE.de.md).
 
 ## Projektstruktur
 
@@ -68,7 +68,7 @@ Weitere ausführliche Schritt-für-Schritt-Erläuterungen zu allen Feldern und W
 | `lib/GameData.ps1` | Erkennung von Steam-Bibliotheken und Auslesen von Spieldaten für Dropdowns. |
 | `lib/Profiles.ps1` | Verwaltung von `WSM2.settings.json` und Profilen. |
 | `lib/Languages.ps1` | Zentrale Sprachfunktionen und Sprachauswahl (NL/EN/FR/DE). |
-| `lib/Languages.*.ps1` | Übersetzungen für EN, FR und DE. |
+| `lib/Languages.*.ps1` | Niederländische Schlüssel und Übersetzungen für EN, FR und DE. |
 | `lib/Server.ps1` | Server starten/stoppen, Statusprüfung und Protokollauslese. |
 
 ## Konfigurationsdateien
@@ -99,7 +99,7 @@ Bei jedem Speichern erstellt WSM2 zuerst eine Kopie als `<dateiname>.yyyyMMdd_HH
 ## Erweitert
 
 - Mit der Umgebungsvariablen `WSM2_SELFTEST=1` führt das Programm einen Diagnosedurchlauf ohne Fenster aus und gibt eine Zusammenfassung der geladenen Daten aus.
-- Mit `WSM2_LANG=nl|en|fr|de` können Sie eine Sprache vorübergehend erzwingen; ohne diese Variable gilt die Auswahl aus `WSM2.settings.json`.
+- Mit `WSM2_LANG=en|nl|fr|de` können Sie eine Sprache vorübergehend erzwingen; ohne diese Variable gilt die Auswahl aus `WSM2.settings.json` (Standard `en`).
 - `WSM2.settings.json` wird bewusst **ohne** Backup geschrieben; erstellen Sie selbst eine Kopie, bevor Sie Pfade oder Profile manuell anpassen.
 
 ## Haftungsausschluss

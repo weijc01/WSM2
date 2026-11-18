@@ -1,107 +1,107 @@
 # WSM2 – Wreckfest 2 Server Manager
 
-WSM2 is een grafisch beheerprogramma voor een **Wreckfest 2 dedicated server** op Windows. In plaats van de JSON-configuratiebestanden met de hand te bewerken, beheer je servernaam, races, cups, rollen, bans en telemetrie vanuit één venster. De server start en stopt met één klik in een apart consolevenster.
+WSM2 is a graphical management application for a **Wreckfest 2 dedicated server** on Windows. Instead of editing JSON configuration files by hand, you manage the server name, races, cups, roles, bans and telemetry from a single window. The server starts and stops with one click in a separate console window.
 
-## Functies
+## Features
 
-- WinForms-interface met zeven tabbladen: Server, Evenementen, Cups, Rollen & Bans, Telemetrie, Starten en Instellingen.
-- Meertalige interface: Nederlands, Engels, Frans en Duits, direct te wisselen via **Instellingen → Taal:**.
-- Meerdere **profielen** met elk een eigen save-dir en modus (`community` of `lokaal`).
-- Automatische detectie van Steam en de Wreckfest 2 Dedicated Server, inclusief extra Steam-bibliotheken.
-- Dropdowns gevuld met echte speldata: levels (`.evse`), weer (`.weat`), AI-sets (`.aist`), game modes en cup-loops (`.becl`).
-- Veilig opslaan: wijzigingen worden geweigerd zolang de server draait (de server overschrijft configs bij afsluiten).
-- Automatische **back-ups** met tijdstempel van elk configuratiebestand bij opslaan.
-- Live serverlog in het venster, met automatische verversing en openen in Kladblok.
-- Starten in een zichtbaar consolevenster, met omgang met spaties in paden via het 8.3-korte pad.
+- WinForms interface with seven tabs: Server, Evenementen, Cups, Rollen & Bans, Telemetrie, Starten and Instellingen.
+- Multilingual interface: English (default), Dutch, French and German, switchable via **Instellingen → Taal:** (Settings → Language).
+- Multiple **profiles**, each with its own save-dir and mode (`community` or `lokaal`).
+- Automatic detection of Steam and the Wreckfest 2 Dedicated Server, including additional Steam libraries.
+- Dropdowns populated with real game data: levels (`.evse`), weather (`.weat`), AI sets (`.aist`), game modes and cup loops (`.becl`).
+- Safe saving: changes are rejected while the server is running (the server overwrites configs on exit).
+- Automatic timestamped **backups** of every configuration file when saving.
+- Live server log in the window, with automatic refresh and opening in Notepad.
+- Starts in a visible console window, handling spaces in paths via the 8.3 short path.
 
-## Vereisten
+## Requirements
 
-- Windows 10/11 met **PowerShell 5.1** en .NET Framework (WinForms; standaard aanwezig).
-- Steam met **Wreckfest 2 Dedicated Server** geïnstalleerd (AppID `1203190`).
-- Schrijfrechten op de installatiemap (`steam_appid.txt` wordt indien nodig aangemaakt) en op de save-dir.
+- Windows 10/11 with **PowerShell 5.1** and .NET Framework (WinForms; included by default).
+- Steam with **Wreckfest 2 Dedicated Server** installed (AppID `1203190`).
+- Write permissions on the installation folder (`steam_appid.txt` is created if needed) and on the save-dir.
 
-### Moet ik .NET Framework apart installeren?
+### Do I need to install .NET Framework separately?
 
-Meestal **nee**: Windows 10/11 levert PowerShell 5.1 en .NET Framework 4.x met WinForms standaard mee. WSM2 heeft geen .NET **SDK** of **Developer Pack** nodig, alleen de **runtime**.
+Usually **no**: Windows 10/11 ships with PowerShell 5.1 and .NET Framework 4.x with WinForms by default. WSM2 does not need the .NET **SDK** or **Developer Pack**, only the **runtime**.
 
-Controleren in PowerShell:
+Check in PowerShell:
 
 ```powershell
-$PSVersionTable.PSVersion          # moet 5.1.x zijn
-(Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full').Release   # 528040 of hoger = .NET 4.8
+$PSVersionTable.PSVersion          # must be 5.1.x
+(Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full').Release   # 528040 or higher = .NET 4.8
 ```
 
-Als .NET Framework 4.8 ontbreekt of is uitgeschakeld:
+If .NET Framework 4.8 is missing or disabled:
 
-1. Download de **.NET Framework 4.8 Runtime** (niet het Developer Pack) van <https://dotnet.microsoft.com/download/dotnet-framework/net48>.
-2. Onder *Advanced downloads* kun je eventueel de **offline installer** kiezen als er tijdens de installatie geen internet beschikbaar is.
-3. Voer de installer uit als administrator en herstart Windows als dat wordt gevraagd.
-4. Alternatief op Windows 10/11: **Configuratiescherm → Programma's en onderdelen → Windows-onderdelen in-/uitschakelen** → ".NET Framework 4.8" aanvinken.
+1. Download the **.NET Framework 4.8 Runtime** (not the Developer Pack) from <https://dotnet.microsoft.com/download/dotnet-framework/net48>.
+2. Under *Advanced downloads* you can optionally choose the **offline installer** if no internet is available during installation.
+3. Run the installer as administrator and restart Windows if prompted.
+4. Alternative on Windows 10/11: **Configuratiescherm → Programma's en onderdelen → Windows-onderdelen in-/uitschakelen** (Control Panel → Programs and Features → Turn Windows features on or off) → check ".NET Framework 4.8".
 
-## Installatie
+## Installation
 
-1. Download of clone deze repository naar een vaste map, bijvoorbeeld `C:\Tools\WSM2`.
-2. Houd `WSM2.cmd`, `WSM2.ps1`, `WSM2.settings.json` en de map `lib\` bij elkaar.
-3. Dubbelklik op **`WSM2.cmd`**. Er is geen installatie of administratorrecht nodig; de launcher start PowerShell met `-ExecutionPolicy Bypass` alleen voor dit proces.
-4. Ga bij de eerste start naar **Instellingen** → **Automatisch detecteren**, controleer de paden en klik op **Instellingen opslaan**.
+1. Download or clone this repository to a fixed folder, for example `C:\Tools\WSM2`.
+2. Keep `WSM2.cmd`, `WSM2.ps1`, `WSM2.settings.json` and the `lib\` folder together.
+3. Double-click **`WSM2.cmd`**. No installation or administrator rights are needed; the launcher starts PowerShell with `-ExecutionPolicy Bypass` for this process only.
+4. On first launch, go to **Instellingen** (Settings) → **Automatisch detecteren** (Auto-detect), check the paths and click **Instellingen opslaan** (Save settings).
 
-> Windows Defender/SmartScreen kan waarschuwen voor een PowerShell-script. De launcher gebruikt alleen lokale scripts uit deze map.
+> Windows Defender/SmartScreen may warn about a PowerShell script. The launcher only uses local scripts from this folder.
 
-## Snel starten
+## Quick start
 
-1. **Instellingen**: detecteer en sla de installatiepaden op; maak eventueel een profiel aan.
-2. **Server**: geef een naam, eventueel een wachtwoord en een gamepoort (standaard `30100`) op → **Serverconfig opslaan**.
-3. **Evenementen**: kies een event loop-bestand of maak er een nieuw aan, voeg races toe → **Opslaan als**.
-4. **Cups** (optioneel): stel cups in → **Cups opslaan**.
-5. **Starten**: kies profiel en modus → **START server**. Stop de server altijd eerst voordat je configuratie wijzigt.
+1. **Instellingen**: detect and save the installation paths; optionally create a profile.
+2. **Server**: enter a name, optionally a password and a game port (default `30100`) → **Serverconfig opslaan** (Save server config).
+3. **Evenementen**: choose an event loop file or create a new one, add races → **Opslaan als** (Save as).
+4. **Cups** (optional): configure cups → **Cups opslaan** (Save cups).
+5. **Starten**: choose a profile and mode → **START server**. Always stop the server before changing configuration.
 
-Zie [HANDLEIDING.md](HANDLEIDING.md) voor de uitgebreide stapsgewijze uitleg van alle velden en workflows.
+See [GUIDE.md](GUIDE.md) for the detailed step-by-step explanation of all fields and workflows.
 
-## Projectstructuur
+## Project structure
 
-| Bestand | Doel |
+| File | Purpose |
 | --- | --- |
-| `WSM2.cmd` | Launcher; start het hoofdvenster zonder zichtbare PowerShell-console. |
-| `WSM2.ps1` | Hoofdprogramma: WinForms-interface, event wiring en load/save-logica. |
-| `WSM2.settings.json` | App-instellingen: paden, laatste profiel, taal, log-volgen en profielen. |
-| `lib/Config.ps1` | Lezen, valideren en schrijven van serverconfig, cups, privileges en telemetrie, inclusief back-ups. |
-| `lib/GameData.ps1` | Detectie van Steam-bibliotheken en uitlezen van speldata voor dropdowns. |
-| `lib/Profiles.ps1` | Beheer van `WSM2.settings.json` en profielen. |
-| `lib/Languages.ps1` | Centrale taalfuncties en taalkeuze (NL/EN/FR/DE). |
-| `lib/Languages.*.ps1` | Vertalingen voor respectievelijk EN, FR en DE. |
-| `lib/Server.ps1` | Server starten/stoppen, statuscontrole en log uitlezen. |
+| `WSM2.cmd` | Launcher; starts the main window without a visible PowerShell console. |
+| `WSM2.ps1` | Main program: WinForms interface, event wiring and load/save logic. |
+| `WSM2.settings.json` | App settings: paths, last profile, language, log following and profiles. |
+| `lib/Config.ps1` | Reading, validating and writing server config, cups, privileges and telemetry, including backups. |
+| `lib/GameData.ps1` | Detection of Steam libraries and reading game data for dropdowns. |
+| `lib/Profiles.ps1` | Management of `WSM2.settings.json` and profiles. |
+| `lib/Languages.ps1` | Central language functions and language selection (NL/EN/FR/DE). |
+| `lib/Languages.*.ps1` | Dutch keys and translations for EN, FR and DE. |
+| `lib/Server.ps1` | Starting/stopping the server, status checks and reading the log. |
 
-## Configuratiebestanden
+## Configuration files
 
-Alle bestanden staan in de **save-dir** van het actieve profiel (standaard `C:\WreckFest2server`).
+All files are located in the **save-dir** of the active profile (default `C:\WreckFest2server`).
 
-| Bestand | Tabblad | Inhoud |
+| File | Tab | Contents |
 | --- | --- | --- |
-| `server_config.scnf` | Server | Naam, wachtwoord, poort, event loop, vlaggen, ban-regels. |
-| `<naam>.becl` | Evenementen | Event loop met races, levels, regels en bot-aantallen. |
-| `server_cup_config.ccnl` | Cups | Cups, puntenverdeling en startvolgorde. |
-| `server_privilege.sprv` | Rollen & Bans | Admin/mod-rollen en bans. |
-| `telemetry/config.json` | Telemetrie | UDP, logging en server-telemetrie. |
+| `server_config.scnf` | Server | Name, password, port, event loop, flags, ban rules. |
+| `<naam>.becl` | Evenementen | Event loop with races, levels, rules and bot counts. |
+| `server_cup_config.ccnl` | Cups | Cups, point distribution and start order. |
+| `server_privilege.sprv` | Rollen & Bans | Admin/mod roles and bans. |
+| `telemetry/config.json` | Telemetrie | UDP, logging and server telemetry. |
 
-Bij elk opslaan maakt WSM2 eerst een kopie als `<bestandsnaam>.yyyyMMdd_HHmmss.bak` naast het origineel.
+On every save, WSM2 first creates a copy named `<bestandsnaam>.yyyyMMdd_HHmmss.bak` next to the original.
 
-## Veelvoorkomende problemen
+## Common problems
 
-| Symptoom | Oplossing |
+| Symptom | Solution |
 | --- | --- |
-| Server niet gevonden | Controleer **Instellingen → Server-installatiemap**; zoek naar `Wreckfest2.exe` of gebruik **Automatisch detecteren**. |
-| Spelers kunnen niet verbinden | Controleer de gamepoort in **Server** en zet deze open in firewall/router. |
-| Opslaan geweigerd | Stop eerst de server; WSM2 voorkomt dat de server je wijzigingen bij afsluiten overschrijft. |
-| Comboboxen (levels/weer) blijven leeg | De server-installatiemap klopt niet; opnieuw detecteren en **Instellingen opslaan**. |
-| Geen log zichtbaar | Vul op **Server** een **Logbestand** in (bestandsnaam in de save-dir of een volledig pad). |
-| Server start met "Fatal Error: pad bestaat niet" | Controleer of de save-dir bestaat; WSM2 gebruikt bij spaties automatisch het 8.3-korte pad. |
+| Server not found | Check **Instellingen → Server-installatiemap**; look for `Wreckfest2.exe` or use **Automatisch detecteren**. |
+| Players cannot connect | Check the game port in **Server** and open it in the firewall/router. |
+| Saving rejected | Stop the server first; WSM2 prevents the server from overwriting your changes on exit. |
+| Combo boxes (levels/weather) remain empty | The server installation folder is incorrect; detect again and click **Instellingen opslaan**. |
+| No log visible | Enter a **Logbestand** on **Server** (file name in the save-dir or a full path). |
+| Server starts with "Fatal Error: pad bestaat niet" | Check that the save-dir exists; WSM2 automatically uses the 8.3 short path when there are spaces. |
 
-## Geavanceerd
+## Advanced
 
-- Met de omgevingsvariabele `WSM2_SELFTEST=1` voert het programma een diagnostische run uit zonder venster en print een samenvatting van geladen data.
-- Met `WSM2_LANG=nl|en|fr|de` forceer je tijdelijk een taal; zonder deze variabele geldt de keuze uit `WSM2.settings.json`.
-- `WSM2.settings.json` wordt bewust **zonder** back-up geschreven; maak zelf een kopie voordat je paden of profielen handmatig aanpast.
+- With the environment variable `WSM2_SELFTEST=1`, the program performs a diagnostic run without a window and prints a summary of the loaded data.
+- With `WSM2_LANG=en|nl|fr|de` you can temporarily force a language; without this variable the choice from `WSM2.settings.json` applies (default `en`).
+- `WSM2.settings.json` is deliberately written **without** a backup; make your own copy before manually changing paths or profiles.
 
 ## Disclaimer
 
-WSM2 is een onofficieel hulpmiddel en is niet verbonden aan Bugbear Entertainment, THQ Nordic of Valve. Gebruik op eigen risico; maak regelmatig back-ups van je save-dir.
+WSM2 is an unofficial tool and is not affiliated with Bugbear Entertainment, THQ Nordic or Valve. Use at your own risk; back up your save-dir regularly.

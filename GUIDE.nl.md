@@ -1,6 +1,6 @@
 # Handleiding – WSM2 (Wreckfest 2 Server Manager)
 
-Deze handleiding beschrijft stap voor stap hoe je WSM2 gebruikt. Lees eerst de [README.md](README.md) voor installatie en algemene informatie.
+Deze handleiding beschrijft stap voor stap hoe je WSM2 gebruikt. Lees eerst de [README.nl.md](README.nl.md) voor installatie en algemene informatie.
 
 ## Inhoud
 
@@ -54,7 +54,7 @@ Knoppen:
 - **Bladeren...** (bij elk veld): kies de map respectievelijk het bestand handmatig.
 - **Automatisch detecteren**: zoekt in `Program Files (x86)`, `Program Files`, het register en `libraryfolders.vdf` van Steam. Handig als Steam op een andere schijf staat.
 - **Instellingen opslaan**: schrijft de paden én de profielentabel weg naar `WSM2.settings.json` en vernieuwt de dropdowns met speldata.
-- **Taal:** kies **Nederlands**, **English**, **Français** of **Deutsch**. De keuze wordt direct toegepast en opgeslagen als `Language` in `WSM2.settings.json`.
+- **Taal:** kies **English** (standaard), **Nederlands**, **Français** of **Deutsch**. De keuze wordt direct toegepast en opgeslagen als `Language` in `WSM2.settings.json`.
 
 ### Profielen
 
