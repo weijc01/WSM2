@@ -55,6 +55,29 @@ Use **Settings -> Auto detect** if the server install or `steam` path is not fou
 
 `auto` prefers a native `Wreckfest2` binary, then Proton, then Wine. Override with `WSM2_LAUNCHER=native|proton|wine|auto` or the `Launcher` setting. Proton uses `<SaveDir>/proton_prefix` as its compatibility data path. The server is started with `--server` or `--local-server` and `--save-dir=<profile save directory>`; console output is written to `wsm2_server_console.log` in the save directory.
 
+## KPN router port forwarding
+
+For the KPN router, go to **Beveiliging → Portforwarding** (Security → Port forwarding) and add:
+
+| Protocol | Port(s) | Internet IP | Destination IP |
+| --- | --- | --- | --- |
+| UDP | `30100,27015,27016,33540` | leave empty | the server |
+
+Leave the **Internet IP** field empty and set the **destination IP** to the server's local IP address. If the router does not accept a comma-separated list, create four separate rules.
+
+## firewalld on SteamOS
+
+SteamOS normally uses firewalld. Open the same four UDP ports:
+
+```sh
+sudo systemctl enable --now firewalld
+sudo firewall-cmd --zone=public --permanent --add-port=30100/udp --add-port=27015/udp --add-port=27016/udp --add-port=33540/udp
+sudo firewall-cmd --reload
+sudo firewall-cmd --zone=public --list-ports
+```
+
+If `firewall-cmd` is not available, no host firewall is likely active and only the router port forwarding is needed. On a Steam Deck with a read-only system, check the rules again after a SteamOS update and re-apply them if they disappeared. To undo, use `--remove-port` instead of `--add-port`.
+
 ## Notes
 
 - This is a console UI; SteamOS does not provide Windows Forms.

@@ -55,6 +55,26 @@ If .NET Framework 4.8 is missing or disabled:
 4. **Cups** (optional): configure cups → **Cups opslaan** (Save cups).
 5. **Starten**: choose a profile and mode → **START server**. Always stop the server before changing configuration.
 
+## KPN router port forwarding
+
+For the KPN router, go to **Beveiliging → Portforwarding** (Security → Port forwarding) and add:
+
+| Protocol | Port(s) | Internet IP | Destination IP |
+| --- | --- | --- | --- |
+| UDP | `30100,27015,27016,33540` | leave empty | the server |
+
+Leave the **Internet IP** field empty and set the **destination IP** to the server's local IP address. If the router does not accept a comma-separated list, create four separate rules.
+
+## Windows Firewall
+
+Allow inbound UDP traffic from outside on the same four ports. Run PowerShell **as Administrator**:
+
+```powershell
+New-NetFirewallRule -DisplayName "Wreckfest 2 Server (UDP 30100,27015,27016,33540)" -Direction Inbound -Protocol UDP -LocalPort 30100,27015,27016,33540 -RemoteAddress Any -Action Allow -Profile Any
+```
+
+Or use the GUI: **Windows Defender Firewall → Advanced settings → Inbound Rules → New Rule...** → **Port** → **UDP** → enter the four ports → allow the connection. Remove or restrict this rule if the server should not be reachable from the internet.
+
 See [GUIDE.md](GUIDE.md) for the detailed step-by-step explanation of all fields and workflows.
 
 ## Project structure

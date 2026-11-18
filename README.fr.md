@@ -55,6 +55,26 @@ Si .NET Framework 4.8 est absent ou désactivé :
 4. **Cups** (facultatif) : configurez les cups → **Cups opslaan**.
 5. **Starten** : choisissez le profil et le mode → **START server**. Arrêtez toujours le serveur avant de modifier une configuration.
 
+## Routeur KPN : redirection de ports
+
+Dans le routeur KPN, allez dans **Beveiliging → Portforwarding** (Sécurité → Redirection de ports) et ajoutez :
+
+| Protocole | Port(s) | IP Internet | IP de destination |
+| --- | --- | --- | --- |
+| UDP | `30100,27015,27016,33540` | laisser vide | le serveur |
+
+Laissez le champ **IP Internet** vide et indiquez l'adresse IP locale du serveur comme **IP de destination**. Si le routeur n'accepte pas une liste de ports séparés par des virgules, créez quatre règles distinctes.
+
+## Pare-feu Windows
+
+Autorisez le trafic UDP entrant depuis l'extérieur sur les mêmes quatre ports. Exécutez PowerShell **en tant qu'administrateur** :
+
+```powershell
+New-NetFirewallRule -DisplayName "Wreckfest 2 Server (UDP 30100,27015,27016,33540)" -Direction Inbound -Protocol UDP -LocalPort 30100,27015,27016,33540 -RemoteAddress Any -Action Allow -Profile Any
+```
+
+Ou via l'interface : **Pare-feu Windows Defender → Paramètres avancés → Règles de trafic entrant → Nouvelle règle...** → **Port** → **UDP** → saisissez les quatre ports → autorisez la connexion. Supprimez ou limitez cette règle si le serveur ne doit pas être accessible depuis Internet.
+
 Consultez [GUIDE.fr.md](GUIDE.fr.md) pour les explications détaillées, étape par étape, de tous les champs et workflows.
 
 ## Structure du projet

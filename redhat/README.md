@@ -50,6 +50,29 @@ The application starts the server with:
 
 Under Proton/Wine, the Windows `Wreckfest2.exe` is launched from the configured install folder and the save directory is passed as one argument, so spaces in paths work without the Windows 8.3 short-path workaround. Console output is written to `wsm2_server_console.log` in the save directory. Use **Start -> Server log** to view it.
 
+## KPN router port forwarding
+
+For the KPN router, go to **Beveiliging → Portforwarding** (Security → Port forwarding) and add:
+
+| Protocol | Port(s) | Internet IP | Destination IP |
+| --- | --- | --- | --- |
+| UDP | `30100,27015,27016,33540` | leave empty | the server |
+
+Leave the **Internet IP** field empty and set the **destination IP** to the server's local IP address. If the router does not accept a comma-separated list, create four separate rules.
+
+## firewalld
+
+Open the same four UDP ports in firewalld:
+
+```sh
+sudo systemctl enable --now firewalld
+sudo firewall-cmd --zone=public --permanent --add-port=30100/udp --add-port=27015/udp --add-port=27016/udp --add-port=33540/udp
+sudo firewall-cmd --reload
+sudo firewall-cmd --zone=public --list-ports
+```
+
+If the server uses another interface or zone, replace `public` with that zone. To undo, repeat the commands with `--remove-port` instead of `--add-port`.
+
 ## Notes
 
 - This is a console UI because Windows Forms is not available on Linux.

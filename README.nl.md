@@ -55,6 +55,26 @@ Als .NET Framework 4.8 ontbreekt of is uitgeschakeld:
 4. **Cups** (optioneel): stel cups in → **Cups opslaan**.
 5. **Starten**: kies profiel en modus → **START server**. Stop de server altijd eerst voordat je configuratie wijzigt.
 
+## KPN-router: poorten doorsturen
+
+Ga in de KPN-router naar **Beveiliging → Portforwarding** en voeg toe:
+
+| Protocol | Poort(en) | Internet-IP | Doel-IP |
+| --- | --- | --- | --- |
+| UDP | `30100,27015,27016,33540` | leeg laten | de server |
+
+Laat het veld **Internet-IP** leeg en vul als **doel-IP** het lokale IP-adres van de server in. Als de router geen lijst met poorten accepteert, maak dan vier aparte regels.
+
+## Windows Firewall
+
+Sta inkomend UDP-verkeer van buitenaf toe op dezelfde vier poorten. Voer PowerShell **als administrator** uit:
+
+```powershell
+New-NetFirewallRule -DisplayName "Wreckfest 2 Server (UDP 30100,27015,27016,33540)" -Direction Inbound -Protocol UDP -LocalPort 30100,27015,27016,33540 -RemoteAddress Any -Action Allow -Profile Any
+```
+
+Of via de GUI: **Windows Defender Firewall → Geavanceerde instellingen → Regels voor binnenkomende verbindingen → Nieuwe regel...** → **Poort** → **UDP** → vul de vier poorten in → sta de verbinding toe. Verwijder of beperk deze regel als de server niet vanaf internet bereikbaar mag zijn.
+
 Zie [GUIDE.nl.md](GUIDE.nl.md) voor de uitgebreide stapsgewijze uitleg van alle velden en workflows.
 
 ## Projectstructuur
