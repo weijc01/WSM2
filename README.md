@@ -62,18 +62,20 @@ For the KPN router, go to **Beveiliging → Portforwarding** (Security → Port 
 | Protocol | Port(s) | Internet IP | Destination IP |
 | --- | --- | --- | --- |
 | UDP | `30100,27015,27016,33540` | leave empty | the server |
+| TCP | `27015` | leave empty | the server |
 
-Leave the **Internet IP** field empty and set the **destination IP** to the server's local IP address. If the router does not accept a comma-separated list, create four separate rules.
+Leave the **Internet IP** field empty and set the **destination IP** to the server's local IP address. If the router does not accept a comma-separated list, create separate rules per port and protocol.
 
 ## Windows Firewall
 
-Allow inbound UDP traffic from outside on the same four ports. Run PowerShell **as Administrator**:
+Allow inbound traffic from outside on the same ports: UDP `30100,27015,27016,33540` and TCP `27015`. Run PowerShell **as Administrator**:
 
 ```powershell
 New-NetFirewallRule -DisplayName "Wreckfest 2 Server (UDP 30100,27015,27016,33540)" -Direction Inbound -Protocol UDP -LocalPort 30100,27015,27016,33540 -RemoteAddress Any -Action Allow -Profile Any
+New-NetFirewallRule -DisplayName "Wreckfest 2 Server (TCP 27015)" -Direction Inbound -Protocol TCP -LocalPort 27015 -RemoteAddress Any -Action Allow -Profile Any
 ```
 
-Or use the GUI: **Windows Defender Firewall → Advanced settings → Inbound Rules → New Rule...** → **Port** → **UDP** → enter the four ports → allow the connection. Remove or restrict this rule if the server should not be reachable from the internet.
+Or use the GUI: **Windows Defender Firewall → Advanced settings → Inbound Rules → New Rule...** → **Port** → create one rule for **UDP** with those four ports and one for **TCP** with `27015` → allow the connection. Remove or restrict these rules if the server should not be reachable from the internet.
 
 See [GUIDE.md](GUIDE.md) for the detailed step-by-step explanation of all fields and workflows.
 

@@ -62,18 +62,20 @@ Ga in de KPN-router naar **Beveiliging → Portforwarding** en voeg toe:
 | Protocol | Poort(en) | Internet-IP | Doel-IP |
 | --- | --- | --- | --- |
 | UDP | `30100,27015,27016,33540` | leeg laten | de server |
+| TCP | `27015` | leeg laten | de server |
 
-Laat het veld **Internet-IP** leeg en vul als **doel-IP** het lokale IP-adres van de server in. Als de router geen lijst met poorten accepteert, maak dan vier aparte regels.
+Laat het veld **Internet-IP** leeg en vul als **doel-IP** het lokale IP-adres van de server in. Als de router geen lijst met poorten accepteert, maak dan aparte regels per poort en protocol.
 
 ## Windows Firewall
 
-Sta inkomend UDP-verkeer van buitenaf toe op dezelfde vier poorten. Voer PowerShell **als administrator** uit:
+Sta inkomend verkeer van buitenaf toe op dezelfde poorten: UDP `30100,27015,27016,33540` en TCP `27015`. Voer PowerShell **als administrator** uit:
 
 ```powershell
 New-NetFirewallRule -DisplayName "Wreckfest 2 Server (UDP 30100,27015,27016,33540)" -Direction Inbound -Protocol UDP -LocalPort 30100,27015,27016,33540 -RemoteAddress Any -Action Allow -Profile Any
+New-NetFirewallRule -DisplayName "Wreckfest 2 Server (TCP 27015)" -Direction Inbound -Protocol TCP -LocalPort 27015 -RemoteAddress Any -Action Allow -Profile Any
 ```
 
-Of via de GUI: **Windows Defender Firewall → Geavanceerde instellingen → Regels voor binnenkomende verbindingen → Nieuwe regel...** → **Poort** → **UDP** → vul de vier poorten in → sta de verbinding toe. Verwijder of beperk deze regel als de server niet vanaf internet bereikbaar mag zijn.
+Of via de GUI: **Windows Defender Firewall → Geavanceerde instellingen → Regels voor binnenkomende verbindingen → Nieuwe regel...** → **Poort** → maak één regel voor **UDP** met die vier poorten en één voor **TCP** met `27015` → sta de verbinding toe. Verwijder of beperk deze regels als de server niet vanaf internet bereikbaar mag zijn.
 
 Zie [GUIDE.nl.md](GUIDE.nl.md) voor de uitgebreide stapsgewijze uitleg van alle velden en workflows.
 

@@ -62,18 +62,20 @@ Dans le routeur KPN, allez dans **Beveiliging → Portforwarding** (Sécurité �
 | Protocole | Port(s) | IP Internet | IP de destination |
 | --- | --- | --- | --- |
 | UDP | `30100,27015,27016,33540` | laisser vide | le serveur |
+| TCP | `27015` | laisser vide | le serveur |
 
-Laissez le champ **IP Internet** vide et indiquez l'adresse IP locale du serveur comme **IP de destination**. Si le routeur n'accepte pas une liste de ports séparés par des virgules, créez quatre règles distinctes.
+Laissez le champ **IP Internet** vide et indiquez l'adresse IP locale du serveur comme **IP de destination**. Si le routeur n'accepte pas une liste de ports séparés par des virgules, créez des règles distinctes par port et protocole.
 
 ## Pare-feu Windows
 
-Autorisez le trafic UDP entrant depuis l'extérieur sur les mêmes quatre ports. Exécutez PowerShell **en tant qu'administrateur** :
+Autorisez le trafic entrant depuis l'extérieur sur les mêmes ports : UDP `30100,27015,27016,33540` et TCP `27015`. Exécutez PowerShell **en tant qu'administrateur** :
 
 ```powershell
 New-NetFirewallRule -DisplayName "Wreckfest 2 Server (UDP 30100,27015,27016,33540)" -Direction Inbound -Protocol UDP -LocalPort 30100,27015,27016,33540 -RemoteAddress Any -Action Allow -Profile Any
+New-NetFirewallRule -DisplayName "Wreckfest 2 Server (TCP 27015)" -Direction Inbound -Protocol TCP -LocalPort 27015 -RemoteAddress Any -Action Allow -Profile Any
 ```
 
-Ou via l'interface : **Pare-feu Windows Defender → Paramètres avancés → Règles de trafic entrant → Nouvelle règle...** → **Port** → **UDP** → saisissez les quatre ports → autorisez la connexion. Supprimez ou limitez cette règle si le serveur ne doit pas être accessible depuis Internet.
+Ou via l'interface : **Pare-feu Windows Defender → Paramètres avancés → Règles de trafic entrant → Nouvelle règle...** → **Port** → créez une règle **UDP** avec ces quatre ports et une règle **TCP** avec `27015` → autorisez la connexion. Supprimez ou limitez ces règles si le serveur ne doit pas être accessible depuis Internet.
 
 Consultez [GUIDE.fr.md](GUIDE.fr.md) pour les explications détaillées, étape par étape, de tous les champs et workflows.
 

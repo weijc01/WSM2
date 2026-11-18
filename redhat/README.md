@@ -57,16 +57,17 @@ For the KPN router, go to **Beveiliging → Portforwarding** (Security → Port 
 | Protocol | Port(s) | Internet IP | Destination IP |
 | --- | --- | --- | --- |
 | UDP | `30100,27015,27016,33540` | leave empty | the server |
+| TCP | `27015` | leave empty | the server |
 
-Leave the **Internet IP** field empty and set the **destination IP** to the server's local IP address. If the router does not accept a comma-separated list, create four separate rules.
+Leave the **Internet IP** field empty and set the **destination IP** to the server's local IP address. If the router does not accept a comma-separated list, create separate rules per port and protocol.
 
 ## firewalld
 
-Open the same four UDP ports in firewalld:
+Open the same UDP ports and TCP `27015` in firewalld:
 
 ```sh
 sudo systemctl enable --now firewalld
-sudo firewall-cmd --zone=public --permanent --add-port=30100/udp --add-port=27015/udp --add-port=27016/udp --add-port=33540/udp
+sudo firewall-cmd --zone=public --permanent --add-port=30100/udp --add-port=27015/udp --add-port=27016/udp --add-port=33540/udp --add-port=27015/tcp
 sudo firewall-cmd --reload
 sudo firewall-cmd --zone=public --list-ports
 ```

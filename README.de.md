@@ -62,18 +62,20 @@ Im KPN-Router unter **Beveiliging → Portforwarding** (Sicherheit → Portweite
 | Protokoll | Port(s) | Internet-IP | Ziel-IP |
 | --- | --- | --- | --- |
 | UDP | `30100,27015,27016,33540` | leer lassen | der Server |
+| TCP | `27015` | leer lassen | der Server |
 
-Das Feld **Internet-IP** leer lassen und als **Ziel-IP** die lokale IP-Adresse des Servers eintragen. Falls der Router keine durch Kommas getrennte Portliste akzeptiert, vier einzelne Regeln erstellen.
+Das Feld **Internet-IP** leer lassen und als **Ziel-IP** die lokale IP-Adresse des Servers eintragen. Falls der Router keine durch Kommas getrennte Portliste akzeptiert, getrennte Regeln pro Port und Protokoll erstellen.
 
 ## Windows-Firewall
 
-Eingehenden UDP-Datenverkehr von außen auf denselben vier Ports erlauben. PowerShell **als Administrator** ausführen:
+Eingehenden Datenverkehr von außen auf denselben Ports erlauben: UDP `30100,27015,27016,33540` und TCP `27015`. PowerShell **als Administrator** ausführen:
 
 ```powershell
 New-NetFirewallRule -DisplayName "Wreckfest 2 Server (UDP 30100,27015,27016,33540)" -Direction Inbound -Protocol UDP -LocalPort 30100,27015,27016,33540 -RemoteAddress Any -Action Allow -Profile Any
+New-NetFirewallRule -DisplayName "Wreckfest 2 Server (TCP 27015)" -Direction Inbound -Protocol TCP -LocalPort 27015 -RemoteAddress Any -Action Allow -Profile Any
 ```
 
-Oder über die Oberfläche: **Windows Defender-Firewall → Erweiterte Einstellungen → Eingehende Regeln → Neue Regel...** → **Port** → **UDP** → die vier Ports eingeben → Verbindung zulassen. Die Regel entfernen oder einschränken, wenn der Server nicht aus dem Internet erreichbar sein soll.
+Oder über die Oberfläche: **Windows Defender-Firewall → Erweiterte Einstellungen → Eingehende Regeln → Neue Regel...** → **Port** → eine Regel für **UDP** mit diesen vier Ports und eine für **TCP** mit `27015` erstellen → Verbindung zulassen. Die Regeln entfernen oder einschränken, wenn der Server nicht aus dem Internet erreichbar sein soll.
 
 Weitere ausführliche Schritt-für-Schritt-Erläuterungen zu allen Feldern und Workflows finden Sie in [GUIDE.de.md](GUIDE.de.md).
 
